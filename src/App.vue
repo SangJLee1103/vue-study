@@ -1,15 +1,9 @@
 <template>
 
+<!-- : == v-bind -->
 
-<!-- modal -->
-<div class="black-bg" v-if="modalOpen == true">
-  <div class="white-bg"> 
-    <img :src="roomInfo[click].image" class="room-img">
-    <h4>{{roomInfo[click].title}}</h4>
-    <p>{{roomInfo[click].content}}</p>
-    <button @click="modalOpen = false">닫기</button>
-  </div>
-</div>
+<!-- props로 자식에게 데이터 보냄  -->
+<Modal :roomInfo="roomInfo" :click="click" :modalOpen="modalOpen"/>
 
 <!-- nav -->
   <div class="menu">
@@ -18,13 +12,9 @@
     <a v-for="(menuList, i) in menu" :key="i"> {{ menuList }} </a>  
   </div>
 
+  <Discount/>
 
-  <div v-for="(room, i) in roomInfo" :key="i">
-    <img :src="roomInfo[i].image" class="room-img">
-    <h4 @click="modalOpen = true; click = i">{{roomInfo[i].title}}</h4>
-    <p>{{roomInfo[i].price}}</p>
-    <!-- v-on과 @는 같음 -->
-  </div>
+  <Card :roomInfo="roomInfo" />
 
   <!-- <div v-for="(productsList, i) in products" :key="i">
     <h4>{{products[i]}}</h4>
@@ -35,6 +25,10 @@
 <script>
 
 import {data} from './assets/oneRoom'
+import Modal from './Modal.vue'
+import Discount from './Discount.vue'
+import Card from './Card.vue'
+
 
 export default {
   name: 'App',
@@ -55,6 +49,9 @@ export default {
   },
 
   components: {
+    Discount : Discount,
+    Modal : Modal,
+    Card : Card,
   }
 }
 </script>
@@ -67,6 +64,13 @@ body {
 
 div {
   box-sizing: border-box;
+}
+
+.discount{
+  background: #eee;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
 }
 
 .black-bg {
