@@ -1,9 +1,11 @@
 <template>
 
-<!-- : == v-bind -->
-
 <!-- props로 자식에게 데이터 보냄  -->
-<Modal :roomInfo="roomInfo" :click="click" :modalOpen="modalOpen"/>
+<!-- v-bind == : -->
+
+<transition name="fade">
+  <Modal @openModal="modalOpen = false" :roomInfo="roomInfo" :click="click" :modalOpen="modalOpen"/> 
+</transition>
 
 <!-- nav -->
   <div class="menu">
@@ -12,9 +14,18 @@
     <a v-for="(menuList, i) in menu" :key="i"> {{ menuList }} </a>  
   </div>
 
-  <Discount/>
+  <Discount />
 
-  <Card :roomInfo="roomInfo" />
+
+
+
+  <button @click="priceSort">가격순정렬</button>
+  <button @click="priceReverseSort">가격역순정렬</button>
+  <button @click="sortHanguel">가나다순정렬</button>
+  <button @click="sortBack">되돌리기</button>
+  
+
+  <Card @openModal="modalOpen = true; click = $event" :roomInfo="roomInfo[i]" v-for="(room, i) in roomInfo" :key="room" />
 
   <!-- <div v-for="(productsList, i) in products" :key="i">
     <h4>{{products[i]}}</h4>
@@ -34,6 +45,8 @@ export default {
   name: 'App',
   data(){ //react에서는 state라고 함
     return {
+      showDiscount : true,
+      roomInfoOrigin : [...data], //JavaScript: [...]사본
       click : 0,
       roomInfo : data,
       modalOpen : false,
@@ -45,9 +58,34 @@ export default {
   methods : {
     increase(i){
       this.count[i]++;
+    },
+
+    priceSort(){
+      this.roomInfo.sort((a, b) => {
+        return a.price - b.price;
+      })
+    },
+
+    priceReverseSort(){
+      this.roomInfo.sort((a, b) => {
+        return b.price - a.price;
+      })
+    },
+
+    sortHanguel(){
+      this.roomInfo.sort((a, b) => {
+        let x = a.title.toLowerCase();
+        let y = b.title.toLowerCase();
+
+        if(x < y) return -1;
+        if(x > y) return 1;
+      });
+    },
+    
+    sortBack(){
+      this.roomInfo = [...this.roomInfoOrigin];
     }
   },
-
   components: {
     Discount : Discount,
     Modal : Modal,
@@ -57,6 +95,30 @@ export default {
 </script>
 
 <style>
+.fade-leave-from {
+  opacity: 1;
+}
+.fade-leave-active {
+  transition: all 1s;
+}
+.fade-leave-to {
+  opacity: 0;
+}
+
+
+
+.fade-enter-from {
+  transform: translateY(-1000px);
+}
+.fade-enter-active {
+  transition: all 1s;
+}
+.fade-enter-to {
+  transform: translateY(0px);
+}
+
+
+
 
 body {
   margin: 0;
